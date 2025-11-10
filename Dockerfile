@@ -1,11 +1,10 @@
-# ✅ Use the universal Corretto JDK 17 image that works on both Mac & GCP
 FROM amazoncorretto:17-alpine
 
-# Set working directory inside the container
-WORKDIR /app
+# Install Xvfb + fonts + bash
+RUN apk add --no-cache xvfb xauth xset fontconfig ttf-dejavu bash
 
-# Copy the built JAR file into the container
+WORKDIR /app
 COPY target/snake-game-1.0.jar app.jar
 
-# Run the JAR file
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Start virtual display and run game
+ENTRYPOINT ["/bin/bash", "-c", "Xvfb :99 -screen 0 1024x768x16 & export DISPLAY=:99 && java -jar app.jar"]
